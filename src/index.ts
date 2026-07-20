@@ -1,32 +1,13 @@
-import argon2 from "argon2";
-import e from "express";
-import * as readline from 'node:readline/promises';
-
+import { pool } from "./db/dbConnection.js";
 async function main() {
-
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    try{
-        const password = await rl.question('input password');
-        console.log(password);
-        const hash = await argon2.hash(password);
-        console.log(hash);
-
-        const isvalid = await argon2.verify(hash, password);
-
-        if(isvalid){
-            console.log("mot de passe correct");
+    try {
+        await pool.query("SELECT 1");
+        console.log("Connection established");
+        
+    } catch (error) {
+        console.error('pas pu executer dbConnect', error);
+        process.exit(1);
     }
-
-
-    } finally {
-        rl.close()
-    }
-
-    
 }
 
 main();
